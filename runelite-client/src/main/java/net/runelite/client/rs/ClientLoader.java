@@ -90,6 +90,7 @@ public class ClientLoader implements Supplier<Applet>
 	private final WorldSupplier worldSupplier;
 	private final RuntimeConfigLoader runtimeConfigLoader;
 	private final String javConfigUrl;
+	public ClassLoader classLoader;
 
 	private Object client;
 
@@ -101,6 +102,7 @@ public class ClientLoader implements Supplier<Applet>
 		this.worldSupplier = new WorldSupplier(okHttpClient);
 		this.runtimeConfigLoader = runtimeConfigLoader;
 		this.javConfigUrl = javConfigUrl;
+
 	}
 
 	@Override
@@ -133,7 +135,6 @@ public class ClientLoader implements Supplier<Applet>
 			SplashScreen.stage(.05, null, "Waiting for other clients to start");
 
 			LOCK_FILE.getParentFile().mkdirs();
-			ClassLoader classLoader;
 			try (FileChannel lockfile = FileChannel.open(LOCK_FILE.toPath(),
 				StandardOpenOption.CREATE, StandardOpenOption.READ, StandardOpenOption.WRITE);
 				FileLock flock = lockfile.lock())
@@ -494,7 +495,7 @@ public class ClientLoader implements Supplier<Applet>
 			if (!Arrays.equals(hos.hash().asBytes(), appliedPatchHash))
 			{
 				log.error("Patched client hash mismatch");
-				updateCheckMode = VANILLA;
+				//updateCheckMode = VANILLA;
 				return;
 			}
 		}

@@ -95,6 +95,8 @@ public class ExternalPluginClient
 			.addPathSegment("manifest")
 			.addPathSegment(RuneLiteProperties.getPluginHubVersion() + "_" + name + ".js")
 			.build();
+		System.out.println("Plugin Hub URL: " + manifest.url().getPath());
+
 		try (Response res = okHttpClient.newCall(new Request.Builder().url(manifest).build()).execute())
 		{
 			if (res.code() != 200)

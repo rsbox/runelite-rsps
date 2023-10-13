@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>net.runelite</groupId>
 		<artifactId>runelite-parent</artifactId>
-		<version>1.10.15-SNAPSHOT</version>
+		<version>1.10.14</version>
 	</parent>
 
 	<artifactId>client</artifactId>
@@ -213,6 +213,11 @@
 			<artifactId>lwjgl-opengl</artifactId>
 			<classifier>natives-macos-arm64</classifier>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>joor</artifactId>
+			<version>0.9.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.lwjgl</groupId>

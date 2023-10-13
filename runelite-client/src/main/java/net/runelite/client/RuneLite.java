@@ -111,6 +111,8 @@ public class RuneLite
 	private static final int MAX_OKHTTP_CACHE_SIZE = 20 * 1024 * 1024; // 20mb
 	public static String USER_AGENT = "RuneLite/" + RuneLiteProperties.getVersion() + "-" + RuneLiteProperties.getCommit() + (RuneLiteProperties.isDirty() ? "+" : "");
 
+	public static ClassLoader clientClassLoader;
+
 	@Getter
 	private static Injector injector;
 
@@ -238,6 +240,7 @@ public class RuneLite
 			new Thread(() ->
 			{
 				clientLoader.get();
+				clientClassLoader = clientLoader.classLoader;
 				ClassPreloader.preload();
 			}, "Preloader").start();
 
@@ -245,7 +248,7 @@ public class RuneLite
 
 			if (developerMode)
 			{
-				boolean assertions = false;
+				boolean assertions = true;
 				assert assertions = true;
 				if (!assertions)
 				{
@@ -454,11 +457,6 @@ public class RuneLite
 			.addInterceptor(chain ->
 			{
 				Request request = chain.request();
-				if (request.header("User-Agent") != null)
-				{
-					return chain.proceed(request);
-				}
-
 				Request userAgentRequest = request
 					.newBuilder()
 					.header("User-Agent", USER_AGENT)
@@ -487,12 +485,8 @@ public class RuneLite
 			{
 				setupInsecureTrustManager(builder);
 			}
-			else
-			{
-				setupTrustManager(builder);
-			}
 		}
-		catch (KeyStoreException | KeyManagementException | NoSuchAlgorithmException e)
+		catch (KeyManagementException | NoSuchAlgorithmException e)
 		{
 			log.warn("error setting up trust manager", e);
 		}
@@ -700,7 +694,7 @@ public class RuneLite
 			}
 		};
 
-		SSLContext sc = SSLContext.getInstance("TLS");
+		SSLContext sc = SSLContext.getInstance("SSL");
 		sc.init(null, new TrustManager[]{trustManager}, new SecureRandom());
 		okHttpClientBuilder.sslSocketFactory(sc.getSocketFactory(), trustManager);
 	}
